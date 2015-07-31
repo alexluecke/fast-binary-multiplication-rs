@@ -2,6 +2,7 @@ use std::cmp;
 
 extern crate time;
 
+#[allow(dead_code)]
 fn main() {
 
     let regular_start = time::get_time().nsec;
@@ -9,7 +10,7 @@ fn main() {
     let regular_end = time::get_time().nsec;
 
     let fast_start = time::get_time().nsec;
-    let fast = multiply(&12387, &93247);
+    let fast = multiply(12387, 93247);
     let fast_end = time::get_time().nsec;
 
     println!("Regular Result: {}", regular);
@@ -25,8 +26,8 @@ fn main() {
 
 }
 
-fn multiply(x: &isize, y: &isize) -> isize {
-    let mut max = cmp::max(*x, *y);
+fn multiply(x: isize, y: isize) -> isize {
+    let mut max = cmp::max(x, y);
     let mut bits = 0;
     let mut mask = 0;
 
@@ -36,10 +37,9 @@ fn multiply(x: &isize, y: &isize) -> isize {
     }
 
     let n = bits;
-    //let l = ((bits as f64)/2.0).ceil() as isize;
     let r = ((bits as f64)/2.0).floor() as isize;
 
-    if n == 1 || n == 0 { return (*x)*(*y) }
+    if n == 1 || n == 0 { return x*y }
 
     bits = r;
     while bits > 0 {
@@ -47,18 +47,25 @@ fn multiply(x: &isize, y: &isize) -> isize {
         bits -= 1;
     }
 
-    let x_l = *x >> r;
-    let x_r = *x & mask;
+    let x_l = x >> r;
+    let x_r = x & mask;
 
-    let y_l = *y >> r;
-    let y_r = *y & mask;
+    let y_l = y >> r;
+    let y_r = y & mask;
 
     let xx = x_l + x_r;
     let yy = y_l + y_r;
 
-    let p_1 = multiply(&x_l, &y_l);
-    let p_2 = multiply(&x_r, &y_r);
-    let p_3 = multiply(&xx, &yy);
+    let p_1 = multiply(x_l, y_l);
+    let p_2 = multiply(x_r, y_r);
+    let p_3 = multiply(xx, yy);
 
     return (1 << 2*r)*p_1 + (1 << r)*(p_3 - p_2 - p_1) + p_2;
+}
+
+
+#[test]
+fn test_problem() {
+    assert_eq!(391, multiply(17, 23));
+    assert_eq!(1155050589, multiply(12387, 93247));
 }
