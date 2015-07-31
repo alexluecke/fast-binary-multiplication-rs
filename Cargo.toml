@@ -1,0 +1,11 @@
+[package]
+name = "fast-binary-mult"
+version = "0.1.0"
+authors = ["Alex Luecke <me@alexjl.com>"]
+
+[dependencies]
+time = "*"
+
+[[bin]]
+name = "fast-binary-mult"
+path = "src/multiply.rs"
